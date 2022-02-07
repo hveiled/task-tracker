@@ -6,11 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class TaskController {
+public class ProjectController {
 
 	private final ProjectService projectService;
 
-	public TaskController(@Autowired ProjectService projectService) {
+	public ProjectController(@Autowired ProjectService projectService) {
 		this.projectService = projectService;
 	}
 }
