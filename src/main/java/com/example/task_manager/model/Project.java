@@ -1,9 +1,7 @@
 package com.example.task_manager.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Project {
@@ -17,6 +15,9 @@ public class Project {
 	String projectCompletionDate;
 	ProjectCurrentStatus currentStatus;
 	int priority;
+
+	@OneToMany
+	private List<Task> taskList;
 
 
 }
