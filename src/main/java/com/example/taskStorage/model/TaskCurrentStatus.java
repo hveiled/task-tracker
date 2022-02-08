@@ -1,4 +1,4 @@
-package com.example.task_manager.model;
+package com.example.taskStorage.model;
 
 public enum TaskCurrentStatus {
 	ToDo, InProgress, Done;
