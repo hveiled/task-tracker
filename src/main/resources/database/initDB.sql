@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS project
 (
     id BIGSERIAL            PRIMARY KEY ,
     project_name            VARCHAR (100) NOT NULL ,
-    project_start_date      DATE ,
-    project_completion_date DATE ,
+    project_start_date      VARCHAR (10) ,
+    project_completion_date VARCHAR (10) ,
     current_status          VARCHAR (20) ,
     priority                INTEGER
 );
