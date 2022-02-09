@@ -5,7 +5,6 @@ import com.example.taskStorage.model.ProjectCurrentStatus;
 import com.example.taskStorage.model.Task;
 import com.example.taskStorage.model.TaskCurrentStatus;
 import com.example.taskStorage.repository.ProjectRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,11 +16,13 @@ class ProjectServiceTest {
 
 	@Autowired
 	private ProjectRepository repository;
-	@Autowired
-	private ProjectService service;
+
+	private final ProjectService service = new ProjectService(repository);
 
 	@Test
 	void findAll() {
+		List<Project> actual = service.findAll();
+		assertEquals(actual, actual);
 	}
 
 	@Test
