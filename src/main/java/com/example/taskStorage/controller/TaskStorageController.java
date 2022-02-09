@@ -68,7 +68,7 @@ public class TaskStorageController {
 	 * @param project body of a new project
 	 * @return Map where key is "id" type of string and value is index type of Long of a <bold>changed</bold> project.
 	 */
-	@PutMapping("/project/{id}")
+	@PutMapping("/project/change/{id}")
 	public Map<String, Long> changeProject(@PathVariable Long id, @RequestBody @Valid Project project) {
 		Project savedProject = projectService.changeProject(id, project);
 		return Map.of("id", savedProject.getId());
@@ -80,7 +80,7 @@ public class TaskStorageController {
 	 * @param id index of existing project
 	 * @return Map containing time and the message
 	 */
-	@DeleteMapping("/project/{id}")
+	@DeleteMapping("/project/delete/{id}")
 	public Map<String, String> deleteProject(@PathVariable Long id) {
 		projectService.deleteProject(id);
 
