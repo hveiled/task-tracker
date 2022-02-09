@@ -3,27 +3,27 @@ package com.example.taskStorage.controller;
 import com.example.taskStorage.model.Project;
 import com.example.taskStorage.model.Task;
 import com.example.taskStorage.service.ProjectService;
-import com.example.taskStorage.service.TaskStorageService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.resource.HttpResource;
 
 import javax.validation.Valid;
-import java.net.http.HttpResponse;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST API for creating, storing and deleting project tasks
+ *
+ * @author Andrei Ivanov
+ * @version 1.0
+ */
 @RestController
+@Validated
 public class TaskStorageController {
 
-	private final TaskStorageService taskStorageService;
 	private final ProjectService projectService;
 
-	public TaskStorageController(TaskStorageService taskStorageService, ProjectService projectService) {
-		this.taskStorageService = taskStorageService;
+	public TaskStorageController( ProjectService projectService) {
 		this.projectService = projectService;
 	}
 
