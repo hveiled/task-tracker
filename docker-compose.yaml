@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  app:
+    container_name: app
+    image: 'docker-spring-boot-postgres:latest'
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresqldb
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresqldb:5432/taskStorage
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  postgresqldb:
+    container_name: db
+    image: 'postgres:13.1-alpine'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=taskStorage
