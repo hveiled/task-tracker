@@ -117,7 +117,7 @@ And status code:
 ```
 ####2.2 To create a new project `POST`:
 ``` http request
-http://localhost:8080/api/project
+http://localhost:8080/api/project/new
 ```
 With the request body:
 ```JSON
