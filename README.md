@@ -115,6 +115,186 @@ And status code:
 ```
 200 OK
 ```
+#####To sort request parameters:
+```http request
+http://localhost:8081/api/project?pageNumber=1&sortField=Id&sortDirection=asc
+```
+Response should be alike:
+```JSON
+{
+    "content": [
+        {
+            "id": 1,
+            "projectName": "New project 1",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-18",
+            "currentStatus": "Active",
+            "priority": 1,
+            "tasks": [
+                {
+                    "id": 4,
+                    "taskName": "Task two",
+                    "taskDescription": "Do task two",
+                    "status": "ToDo",
+                    "priority": 1
+                },
+                {
+                    "id": 1,
+                    "taskName": "Task one",
+                    "taskDescription": "Do task one",
+                    "status": "Done",
+                    "priority": 1
+                },
+                {
+                    "id": 7,
+                    "taskName": "Task three",
+                    "taskDescription": "Do task three",
+                    "status": "ToDo",
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "projectName": "New project 3",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-18",
+            "currentStatus": "NotStarted",
+            "priority": 2,
+            "tasks": [
+                {
+                    "id": 5,
+                    "taskName": "Task two",
+                    "taskDescription": "Do task two",
+                    "status": "InProgress",
+                    "priority": 1
+                },
+                {
+                    "id": 8,
+                    "taskName": "Task three",
+                    "taskDescription": "Do task three",
+                    "status": "InProgress",
+                    "priority": 1
+                },
+                {
+                    "id": 2,
+                    "taskName": "Task one",
+                    "taskDescription": "Do task one",
+                    "status": "ToDo",
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "projectName": "New project 2",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-18",
+            "currentStatus": "Completed",
+            "priority": 3,
+            "tasks": [
+                {
+                    "id": 9,
+                    "taskName": "Task three",
+                    "taskDescription": "Do task three",
+                    "status": "Done",
+                    "priority": 1
+                },
+                {
+                    "id": 3,
+                    "taskName": "Task one",
+                    "taskDescription": "Do task one",
+                    "status": "InProgress",
+                    "priority": 1
+                },
+                {
+                    "id": 6,
+                    "taskName": "Task two",
+                    "taskDescription": "Do task two",
+                    "status": "Done",
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "projectName": "New project 11",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-08",
+            "currentStatus": "Completed",
+            "priority": 3,
+            "tasks": [
+                {
+                    "id": 10,
+                    "taskName": "A pretty task",
+                    "taskDescription": "Do task three",
+                    "status": "Done",
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "projectName": "New project 22",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-08",
+            "currentStatus": "Completed",
+            "priority": 3,
+            "tasks": [
+                {
+                    "id": 11,
+                    "taskName": "A pretty task",
+                    "taskDescription": "Do task three",
+                    "status": "Done",
+                    "priority": 1
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "projectName": "New project 33",
+            "projectStartDate": "2022-02-08",
+            "projectCompletionDate": "2022-02-08",
+            "currentStatus": "Completed",
+            "priority": 3,
+            "tasks": [
+                {
+                    "id": 12,
+                    "taskName": "A pretty task",
+                    "taskDescription": "Do task three",
+                    "status": "Done",
+                    "priority": 1
+                }
+            ]
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": false,
+            "unsorted": false,
+            "sorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 6,
+        "paged": true,
+        "unpaged": false
+    },
+    "totalPages": 2,
+    "totalElements": 9,
+    "last": false,
+    "size": 6,
+    "number": 0,
+    "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+    },
+    "numberOfElements": 6,
+    "first": true,
+    "empty": false
+}
+```
 ####2.2 To create a new project `POST`:
 ``` http request
 http://localhost:8080/api/project/new
