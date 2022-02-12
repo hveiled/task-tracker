@@ -143,17 +143,16 @@ public class ProjectService {
 						projectId + " was not found")
 		);
 
-		boolean exists = false;
-		int index = 0;
+		boolean isTaskExists = false;
 		for (Task el : foundProject.getTasks()) {
 			if (el.getId() == (long)taskId) {
 				foundProject.getTasks().remove(el);
 				projectRepository.save(foundProject);
-				exists = true;
+				isTaskExists = true;
 				break;
 			}
 		}
-		if (!exists) {
+		if (!isTaskExists) {
 			LOGGER.info("Task was  not found");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no task with ID " + taskId);
 		}
