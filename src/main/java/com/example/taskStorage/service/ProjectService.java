@@ -6,12 +6,14 @@ import com.example.taskStorage.repository.ProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Project service. Business layer.
@@ -36,10 +38,19 @@ public class ProjectService {
 	/**
 	 * Method of business layer allows to get all the projects.
 	 *
-	 * @return List of Project objects
+	 * @param pageNumber - The returned page number.
+	 * @param sortField - Sorting field
+	 * @param sortDirection - Sorting direction. <b>asc</b> to implement ascending order sorting.
+	 * @return Pageable object
 	 */
-	public List<Project> findAll() {
-		return projectRepository.findAll();
+	public Page<Project> findAll(int pageNumber, String sortField, String sortDirection) {
+		if (pageNumber < 1) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must not be less than zero!");
+		}
+		Sort sort = Sort.by(sortField);
+		sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
+		Pageable page = PageRequest.of(pageNumber - 1, 6, sort);
+		return projectRepository.findAll(page);
 	}
 
 	/**
