@@ -3,12 +3,12 @@ package com.example.taskStorage.controller;
 import com.example.taskStorage.model.Project;
 import com.example.taskStorage.model.Task;
 import com.example.taskStorage.service.ProjectService;
+import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,8 +33,11 @@ public class TaskStorageController {
 	 * @return List of projects
 	 */
 	@GetMapping("/project")
-	public List<Project> getProjects() {
-		return projectService.findAll();
+	public Page<Project> getProjects(
+			@RequestParam int pageNumber,
+			@RequestParam String sortField,
+			@RequestParam String sortDirection) {
+		return projectService.findAll(pageNumber, sortField, sortDirection);
 	}
 
 	/**
