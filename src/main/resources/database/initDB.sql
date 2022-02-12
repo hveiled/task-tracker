@@ -17,16 +17,5 @@ CREATE TABLE IF NOT EXISTS task
     priority                INTEGER ,
     project_id              INTEGER ,
     CONSTRAINT fk_task_project
-    FOREIGN KEY (project_id) REFERENCES project (id)
+    FOREIGN KEY (project_id) REFERENCES project (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
--- CREATE TABLE IF NOT EXISTS project_tasks
--- (
---     project_id INTEGER ,
---     CONSTRAINT fk_project_task
---     FOREIGN KEY (project_id) REFERENCES project (id) ,
---     task_id INTEGER ,
---     CONSTRAINT fk_project_task1
---     FOREIGN KEY (task_id) REFERENCES task (id)
--- );
---
