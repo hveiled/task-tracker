@@ -6,16 +6,17 @@ import com.example.taskStorage.model.Task;
 import com.example.taskStorage.model.TaskCurrentStatus;
 import com.example.taskStorage.repository.ProjectRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProjectServiceTest {
 
-	@Autowired
-	private ProjectRepository repository;
+	private ProjectRepository repository = Mockito.mock(ProjectRepository.class);
 
 	private final ProjectService service = new ProjectService(repository);
 
@@ -41,7 +42,7 @@ class ProjectServiceTest {
 		task.setStatus(TaskCurrentStatus.ToDo);
 		task.setProject(project);
 
-		project.setTasks(List.of(task));
+		project.setTasks(Set.of(task));
 
 		Project actualResult = service.createProject(project);
 		assertEquals("Test project", actualResult.getProjectName());
@@ -72,7 +73,7 @@ class ProjectServiceTest {
 		task.setStatus(TaskCurrentStatus.ToDo);
 		task.setProject(project);
 
-		project.setTasks(List.of(task));
+		project.setTasks(Set.of(task));
 		Project actualResult = service.changeProject(1L, project );
 		assertEquals("Test project", actualResult.getProjectName());
 		assertEquals("2022-02-08", actualResult.getProjectStartDate());
@@ -97,7 +98,7 @@ class ProjectServiceTest {
 		task.setStatus(TaskCurrentStatus.ToDo);
 		task.setProject(project);
 
-		project.setTasks(List.of(task));
+		project.setTasks(Set.of(task));
 		service.deleteProject(1L);
 	}
 
