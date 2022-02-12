@@ -7,8 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Project entity model
@@ -43,11 +42,22 @@ public class Project {
 	@Min(value = 0, message = "Project priority should not be negative or zero")
 	int priority;
 
-	@OneToMany(
-			cascade = CascadeType.ALL, fetch = FetchType.EAGER,
-			mappedBy = "project", orphanRemoval = true)
+	@OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Task> tasks = new ArrayList<>();
+	private Set<Task> tasks = new HashSet<>();
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Project project = (Project) o;
+		return priority == project.priority && id.equals(project.id) && Objects.equals(projectName, project.projectName) && Objects.equals(projectStartDate, project.projectStartDate) && Objects.equals(projectCompletionDate, project.projectCompletionDate) && currentStatus == project.currentStatus && Objects.equals(tasks, project.tasks);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, projectName, projectStartDate, projectCompletionDate, currentStatus, priority, tasks);
+	}
 
 	@Override
 	public String toString() {
