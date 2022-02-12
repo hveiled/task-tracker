@@ -36,7 +36,7 @@ public class Task {
 	@Column(name = "priority")
 	private int priority;
 
-	@ManyToOne
+	@ManyToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name = "project_id")
 	@JsonBackReference
 	private Project project;
