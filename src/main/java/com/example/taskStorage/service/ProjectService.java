@@ -86,17 +86,12 @@ public class ProjectService {
 	 * @see Project the entity model of Project
 	 */
 	public Project changeProject(Long id, Project project) {
-		Project changingProject = projectRepository.findById(id).orElseThrow(
-				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project with the ID " +
-						id + " was not found")
-		);
-		changingProject.setProjectName(project.getProjectName());
-		changingProject.setCurrentStatus(project.getCurrentStatus());
-		changingProject.setPriority(project.getPriority());
-		changingProject.setProjectStartDate(project.getProjectStartDate());
-		changingProject.setProjectCompletionDate(project.getProjectCompletionDate());
-		changingProject.setTasks(project.getTasks());
-		return projectRepository.save(changingProject);
+		if (!projectRepository.existsById(id)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Project with the ID " +
+					id + " was not found");
+		}
+		project.setId(id);
+		return projectRepository.save(project);
 	}
 
 	/**
@@ -152,17 +147,15 @@ public class ProjectService {
 		int index = 0;
 		for (Task el : foundProject.getTasks()) {
 			if (el.getId() == (long)taskId) {
+				foundProject.getTasks().remove(el);
+				projectRepository.save(foundProject);
 				exists = true;
 				break;
 			}
-			index++;
 		}
 		if (!exists) {
 			LOGGER.info("Task was  not found");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no task with ID " + taskId);
-		} else {
-			foundProject.getTasks().remove(index);
-			projectRepository.save(foundProject);
 		}
 	}
 }
