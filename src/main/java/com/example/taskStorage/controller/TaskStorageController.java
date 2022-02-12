@@ -55,7 +55,7 @@ public class TaskStorageController {
 	 * @param project - JSON representation of a project using as request body.
 	 * @return Map where key is "id" type of string and value is index type of Long of a <bold>saved</bold> project.
 	 */
-	@PostMapping("/createProject")
+	@PostMapping("/project/new")
 	public Map<String, Long> createProject(@RequestBody @Valid Project project) {
 		Project savedProject = projectService.createProject(project);
 		return Map.of("id", savedProject.getId());
