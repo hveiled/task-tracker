@@ -2,12 +2,15 @@
 ###1. How to start
 
 To start the application run following commands from project root directory:
-1) `mvn clean install -DskipTests` to make package
+1) `mvn clean package` to make package. Key `-DskipTests` to skip unit tests tests
 2) `docker-compose up` to start the app
+3) `docker-compose down` to turn off and remove container data
 
 After you start the app database will be created and populated with the start data.
 
 ###2. How to check API endpoints
+Swagger interface for checking endpoints `http://localhost:8080/api/swagger.html`
+
 ####2.1 To `GET` all existing projects:
 ```http request 
 http://localhost:8080/api/project
