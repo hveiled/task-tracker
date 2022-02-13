@@ -41,13 +41,17 @@ public class Task {
 	@JsonBackReference
 	private Project project;
 
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Task task = (Task) o;
-		return priority == task.priority && id.equals(task.id) && Objects.equals(taskName, task.taskName) && Objects.equals(taskDescription, task.taskDescription) && status == task.status && Objects.equals(project, task.project);
+		return priority == task.priority &&
+				id.equals(task.id) &&
+				Objects.equals(taskName, task.taskName) &&
+				Objects.equals(taskDescription, task.taskDescription) &&
+				status == task.status &&
+				Objects.equals(project, task.project);
 	}
 
 	@Override
