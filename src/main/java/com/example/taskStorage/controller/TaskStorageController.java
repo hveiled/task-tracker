@@ -19,6 +19,7 @@ import java.util.Map;
  */
 @RestController
 @Validated
+//@RequestMapping("/api")
 public class TaskStorageController {
 
 	private final ProjectService projectService;
@@ -34,10 +35,11 @@ public class TaskStorageController {
 	 */
 	@GetMapping("/project")
 	public Page<Project> getProjects(
-			@RequestParam int pageNumber,
-			@RequestParam String sortField,
-			@RequestParam String sortDirection) {
-		return projectService.findAll(pageNumber, sortField, sortDirection);
+			@RequestParam(required = false) int pageNumber,
+			@RequestParam(required = false) int pageSize,
+			@RequestParam(required = false) String sortField,
+			@RequestParam(required = false) String sortDirection) {
+		return projectService.findAll(pageNumber, pageSize, sortField, sortDirection);
 	}
 
 	/**
