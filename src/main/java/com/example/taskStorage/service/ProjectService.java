@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 /**
@@ -94,7 +95,7 @@ public class ProjectService {
 	 * @param project The Project body
 	 * @return Project body.
 	 * @throws ResponseStatusException if the Project with the ID was not found
-	 * @see Project the entity model of Project
+	 * @see Project - the entity model of the Project
 	 */
 	public Project changeProject(Long id, Project project) {
 		if (!projectRepository.existsById(id)) {
@@ -126,6 +127,7 @@ public class ProjectService {
  	 * @param task The Task body
 	 * @see Task entity model
 	 */
+	@Transactional
 	public void addTask(Long id, Task task) {
 		Project foundProject = projectRepository.findById(id).orElseThrow(
 				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project with the ID " +
@@ -137,7 +139,7 @@ public class ProjectService {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The task in the task list already");
 			}
 		}
-		task.setProject(foundProject);
+		task.setProject(foundProject);      //видимо так делать не стоит из-за потоконебезопасности
 		foundProject.getTasks().add(task);
 		projectRepository.save(foundProject);
 	}
@@ -148,24 +150,18 @@ public class ProjectService {
 	 * @param projectId Project ID
 	 * @param taskId Task ID
 	 */
-	public void deleteTask(Long projectId, int taskId) {
+	public void deleteTask(long projectId, long taskId) {
 		Project foundProject = projectRepository.findById(projectId).orElseThrow(
 				() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Project with the ID " +
 						projectId + " was not found")
 		);
-
-		boolean isTaskExists = false;
-		for (Task el : foundProject.getTasks()) {
-			if (el.getId() == (long)taskId) {
-				foundProject.getTasks().remove(el);
-				projectRepository.save(foundProject);
-				isTaskExists = true;
-				break;
-			}
-		}
-		if (!isTaskExists) {
-			LOGGER.info("Task was  not found");
+		boolean removed = foundProject.getTasks().removeIf(
+				task -> task.getId() == taskId
+		);
+		if (!removed) {
+			LOGGER.info("Task was not found");
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There is no task with ID " + taskId);
 		}
+		projectRepository.save(foundProject);
 	}
 }
