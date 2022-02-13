@@ -2,6 +2,7 @@ package com.example.taskStorage.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "task")
@@ -40,6 +42,52 @@ public class Task {
 	@JoinColumn(name = "project_id")
 	@JsonBackReference
 	private Project project;
+
+	private Task(Long id, String taskName, String taskDescription, TaskCurrentStatus status, int priority){
+		this.id = id;
+		this.taskName = taskName;
+		this.taskDescription = taskDescription;
+		this.status = status;
+		this.priority = priority;
+	}
+
+	public static class Builder {
+		private Long id;
+		private String taskName;
+		private String taskDescription;
+		private TaskCurrentStatus status;
+		private int priority;
+
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder taskName(String name) {
+			this.taskName = name;
+			return this;
+		}
+
+		public Builder taskDescription(String taskDescription) {
+			this.taskDescription = taskDescription;
+			return this;
+		}
+
+		public Builder status(TaskCurrentStatus status) {
+			this.status = status;
+			return this;
+		}
+
+		public Builder priority(int priority) {
+			this.priority = priority;
+			return this;
+		}
+
+		public Task build() {
+			return new Task(id, taskName, taskDescription, status, priority);
+		}
+
+	}
 
 	@Override
 	public boolean equals(Object o) {

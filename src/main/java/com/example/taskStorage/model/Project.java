@@ -2,6 +2,7 @@ package com.example.taskStorage.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -12,6 +13,8 @@ import java.util.*;
 /**
  * Project entity model
  */
+//@Builder(toBuilder = true)
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "project")
@@ -24,27 +27,85 @@ public class Project {
 	@Column(name = "project_name")
 	@Length(max = 100, message = "Project name is too long")
 	@NotBlank(message = "Project name should not be blank")
-	String projectName;
+	private String projectName;
 
 	@Column(name = "project_start_date")
 	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
-	String projectStartDate;
+	private String projectStartDate;
 
 	@Column(name = "project_completion_date")
 	@Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
-	String projectCompletionDate;
+	private String projectCompletionDate;
 
 	@Column(name = "current_status")
 	@Enumerated(EnumType.STRING)
-	ProjectCurrentStatus currentStatus;
+	private ProjectCurrentStatus currentStatus;
 
 	@Column(name = "priority")
 	@Min(value = 0, message = "Project priority should not be negative or zero")
-	int priority;
+	private int priority;
 
 	@OneToMany(mappedBy = "project", orphanRemoval = true, cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private Set<Task> tasks = new HashSet<>();
+	private Set<Task> tasks/* = new HashSet<>()*/;
+
+	private Project(Long id, String projectName, String projectStartDate, String projectCompletionDate, ProjectCurrentStatus status, int priority) {
+		this.id = id;
+		this.projectName = projectName;
+		this.projectStartDate = projectStartDate;
+		this.projectCompletionDate = projectCompletionDate;
+		this.currentStatus = status;
+		this.priority = priority;
+	}
+
+	public static class Builder{
+		private Long id;
+		private String projectName;
+		private String projectStartDate;
+		private String projectCompletionDate;
+		private ProjectCurrentStatus currentStatus;
+		private int priority;
+		private Set<Task> tasks;
+
+		public Builder id(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder projectName(String name) {
+			this.projectName = name;
+			return this;
+		}
+
+		public Builder projectStartDate(String startDate) {
+			this.projectStartDate = startDate;
+			return this;
+		}
+
+		public Builder projectCompletionDate(String completionDate) {
+			this.projectCompletionDate = completionDate;
+			return this;
+		}
+
+		public Builder currentStatus(ProjectCurrentStatus status) {
+			this.currentStatus = status;
+			return this;
+		}
+
+		public Builder priority(int priority) {
+			this.priority = priority;
+			return this;
+		}
+
+		public Builder tasks(Set<Task> tasks) {
+			this.tasks = tasks;
+			return this;
+		}
+
+		public Project build() {
+			return new Project(id, projectName, projectStartDate, projectCompletionDate, currentStatus, priority);
+		}
+	}
 
 	@Override
 	public boolean equals(Object o) {
