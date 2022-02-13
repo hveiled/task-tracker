@@ -41,16 +41,17 @@ public class ProjectService {
 	 *
 	 * @param pageNumber - The returned page number.
 	 * @param sortField - Sorting field
+	 * @param pageSize - number of elements on the page
 	 * @param sortDirection - Sorting direction. <b>asc</b> to implement ascending order sorting.
 	 * @return Pageable object
 	 */
-	public Page<Project> findAll(int pageNumber, String sortField, String sortDirection) {
+	public Page<Project> findAll(Integer pageNumber, Integer pageSize, String sortField, String sortDirection) {
 		if (pageNumber < 1) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must not be less than zero!");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must not be less than one!");
 		}
 		Sort sort = Sort.by(sortField);
 		sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-		Pageable page = PageRequest.of(pageNumber - 1, 6, sort);
+		Pageable page = PageRequest.of(pageNumber - 1, pageSize, sort);
 		return projectRepository.findAll(page);
 	}
 
