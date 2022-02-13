@@ -117,7 +117,7 @@ public class TaskStorageController {
 	 * @return Message of success
 	 */
 	@DeleteMapping("/project/{projectId}/deleteTask/{taskId}")
-	public Map<String, String> deleteTask(@PathVariable Long projectId, @PathVariable int taskId) {
+	public Map<String, String> deleteTask(@PathVariable Long projectId, @PathVariable long taskId) {
 		projectService.deleteTask(projectId, taskId);
 		return Map.of("message", "Task was successfully deleted");
 	}
