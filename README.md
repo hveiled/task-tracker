@@ -9,7 +9,10 @@ To start the application run following commands from project root directory:
 After you start the app database will be created and populated with the start data.
 
 ###2. How to check API endpoints
-Swagger interface for checking endpoints `http://localhost:8080/api/swagger.html`
+Swagger interface for checking endpoints 
+```http request
+http://localhost:8080/api/swagger.html
+```
 
 ####2.1 To `GET` all existing projects:
 ```http request 
