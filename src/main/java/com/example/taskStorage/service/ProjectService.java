@@ -46,13 +46,31 @@ public class ProjectService {
 	 * @return Pageable object
 	 */
 	public Page<Project> findAll(Integer pageNumber, Integer pageSize, String sortField, String sortDirection) {
-		if (pageNumber < 1) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must not be less than one!");
+		Pageable page;
+		Sort sort;
+		if (pageNumber == null) {
+			page = Pageable.unpaged();
+			return projectRepository.findAll(page);
 		}
-		Sort sort = Sort.by(sortField);
+		validateRequestParameters(pageNumber, pageSize, sortField, sortDirection);
+		sort = Sort.by(sortField);
 		sort = sortDirection.equals("asc") ? sort.ascending() : sort.descending();
-		Pageable page = PageRequest.of(pageNumber - 1, pageSize, sort);
+		page = PageRequest.of(pageNumber - 1, pageSize, sort);
 		return projectRepository.findAll(page);
+	}
+
+	private void validateRequestParameters(Integer pageNumber, Integer pageSize, String sortField, String sortDirection) {
+
+		if (pageNumber < 1) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page number must not be less than one!");
+		}
+		if (pageSize < 1) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size must not be less than one!");
+		}
+		if (!"asc".equals(sortDirection) && !"desc".equals(sortDirection)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sort direction must be either 'asc' or 'desc'");
+		}
+
 	}
 
 	/**
