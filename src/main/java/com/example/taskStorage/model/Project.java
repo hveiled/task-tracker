@@ -49,13 +49,14 @@ public class Project {
 	@JsonManagedReference
 	private Set<Task> tasks/* = new HashSet<>()*/;
 
-	private Project(Long id, String projectName, String projectStartDate, String projectCompletionDate, ProjectCurrentStatus status, int priority) {
+	private Project(Long id, String projectName, String projectStartDate, String projectCompletionDate, ProjectCurrentStatus status, int priority, Set<Task> tasks) {
 		this.id = id;
 		this.projectName = projectName;
 		this.projectStartDate = projectStartDate;
 		this.projectCompletionDate = projectCompletionDate;
 		this.currentStatus = status;
 		this.priority = priority;
+		this.tasks = tasks;
 	}
 
 	public static class Builder{
@@ -103,7 +104,7 @@ public class Project {
 		}
 
 		public Project build() {
-			return new Project(id, projectName, projectStartDate, projectCompletionDate, currentStatus, priority);
+			return new Project(id, projectName, projectStartDate, projectCompletionDate, currentStatus, priority, tasks);
 		}
 	}
 
