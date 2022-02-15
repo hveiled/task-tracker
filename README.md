@@ -340,21 +340,17 @@ http://localhost:8080/api/project/change/4
 With the request body:
 ```JSON
 {
-  "projectName": "Brand new project 42",
-  "projectStartDate": "2022-02-06",
-  "projectCompletionDate": "2023-02-07",
-  "currentStatus": "NotStarted",
-  "priority": 1,
-  "taskList": [
+  "id": 6,
+  "projectName": "New project 42 is changed",
+  "projectStartDate": "2022-02-08",
+  "projectCompletionDate": "2022-02-18",
+  "currentStatus": "Completed",
+  "priority": 3,
+  "tasks": [
     {
-      "taskName": "One",
-      "taskDescription": "Do one",
-      "status": "ToDo",
-      "priority": 3
-    },
-    {
-      "taskName": "Two",
-      "taskDescription": "Do two",
+      "id": 12,
+      "taskName": "A pretty task after changing",
+      "taskDescription": "Do pretty task after c",
       "status": "Done",
       "priority": 1
     }
