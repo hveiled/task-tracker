@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +26,6 @@ class ProjectServiceTest {
 		service = new ProjectService(repository);
 		projectBuilder = new Project.Builder();
 		taskBuilder = new Task.Builder();
-
 	}
 
 	@Test
@@ -45,7 +43,7 @@ class ProjectServiceTest {
 				.projectStartDate("2022-02-12")
 				.projectCompletionDate("2022-02-22")
 				.priority(1)
-				.tasks(Collections.singleton(task))
+				.tasks(Set.of(task))
 				.currentStatus(ProjectCurrentStatus.NotStarted)
 				.build();
 		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
@@ -56,12 +54,21 @@ class ProjectServiceTest {
 		assertEquals("2022-02-22", actualResult.getProjectCompletionDate());
 		assertEquals(1, actualResult.getPriority());
 		assertEquals(ProjectCurrentStatus.NotStarted, actualResult.getCurrentStatus());
-//		assertEquals(Collections.singleton(task), actualResult.getTasks());
+		assertEquals(projectBody.getTasks(), actualResult.getTasks());
 	}
 
 	@Test
-	void testDeleteProjectThrowsExc() {
-		assertThrows(ResponseStatusException.class,() -> service.deleteProject(42L));
+	void testDeleteProjectWhenIdNotFoundThrowsExc() {
+		long id = 1L;
+		Mockito.when(repository.existsById(id)).thenReturn(false);
+		assertThrows(ResponseStatusException.class, ()->service.deleteProject(id));
+	}
+
+	@Test
+	void testDeleteProjectWhenIdFoundDoesNotThrow() {
+		long id = 1L;
+		Mockito.when(repository.existsById(id)).thenReturn(true);
+		assertDoesNotThrow(()->service.deleteProject(id));
 	}
 
 	@Test
@@ -79,7 +86,7 @@ class ProjectServiceTest {
 				.projectStartDate("2022-02-12")
 				.projectCompletionDate("2022-02-22")
 				.priority(1)
-				.tasks(Collections.singleton(task))
+				.tasks(Set.of(task))
 				.currentStatus(ProjectCurrentStatus.NotStarted)
 				.build();
 		Mockito.when(repository.findById(1L)).thenReturn(Optional.of(projectBody));
@@ -90,11 +97,11 @@ class ProjectServiceTest {
 		assertEquals("2022-02-22", actualResult.getProjectCompletionDate());
 		assertEquals(1, actualResult.getPriority());
 		assertEquals(ProjectCurrentStatus.NotStarted, actualResult.getCurrentStatus());
-//		assertEquals(Collections.singleton(task), actualResult.getTasks());
+		assertEquals(projectBody.getTasks(), actualResult.getTasks());
 	}
 
 	@Test
-	void testChangeProjectIfFoungThanReturnsProject() {
+	void testChangeProjectIfProjectFoundThanReturnsProject() {
 		Task task = taskBuilder
 				.id(1L)
 				.taskName("Some task one")
@@ -108,12 +115,10 @@ class ProjectServiceTest {
 				.projectStartDate("2022-02-12")
 				.projectCompletionDate("2022-02-22")
 				.priority(1)
-				.tasks(Collections.singleton(task))
+				.tasks(Set.of(task))
 				.currentStatus(ProjectCurrentStatus.NotStarted)
 				.build();
-		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
 		Mockito.when(repository.existsById(1L)).thenReturn(true);
-		service.createProject(projectBody);
 		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
 		Project actualResult = service.changeProject(1L, projectBody);
 
@@ -123,9 +128,11 @@ class ProjectServiceTest {
 		assertEquals("2022-02-22", actualResult.getProjectCompletionDate());
 		assertEquals(1, actualResult.getPriority());
 		assertEquals(ProjectCurrentStatus.NotStarted, actualResult.getCurrentStatus());
+		assertEquals(projectBody.getTasks(), actualResult.getTasks());
 	}
+
 	@Test
-	void testChangeProjectIfNotFountThanThrows() {
+	void testChangeProjectIfProjectNotFountThanThrows() {
 		Task task = taskBuilder
 				.id(1L)
 				.taskName("Some task one")
@@ -139,14 +146,133 @@ class ProjectServiceTest {
 				.projectStartDate("2022-02-12")
 				.projectCompletionDate("2022-02-22")
 				.priority(1)
-				.tasks(Collections.singleton(task))
+				.tasks(Set.of(task))
 				.currentStatus(ProjectCurrentStatus.NotStarted)
 				.build();
-		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
 		Mockito.when(repository.existsById(1L)).thenReturn(false);
-		service.createProject(projectBody);
-		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
 
 		assertThrows(ResponseStatusException.class, ()->service.changeProject(1L, projectBody));
+	}
+
+	@Test
+	void testDeleteTaskWhenProjectNotFoundThanTrowsExc() {
+		Task task = taskBuilder
+				.id(1L)
+				.taskName("Some task one")
+				.taskDescription("Need to do task one")
+				.priority(1)
+				.status(TaskCurrentStatus.ToDo)
+				.build();
+		Project projectBody = projectBuilder
+				.id(1L)
+				.projectName("Brand new project")
+				.projectStartDate("2022-02-12")
+				.projectCompletionDate("2022-02-22")
+				.priority(1)
+				.tasks(Set.of(task))
+				.currentStatus(ProjectCurrentStatus.NotStarted)
+				.build();
+		Mockito.when(repository.findById(1L)).thenReturn(Optional.empty()); //project was not found
+		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
+
+		assertThrows(ResponseStatusException.class, ()->service.deleteTask(1L, 1L));
+	}
+
+	@Test
+	void testDeleteTaskWhenProjectFoundThanDoesNotThrowExc() {
+		Task task1 = taskBuilder
+				.id(1L)
+				.taskName("Some task one")
+				.taskDescription("Need to do task one")
+				.priority(1)
+				.status(TaskCurrentStatus.ToDo)
+				.build();
+		Task task2 = taskBuilder
+				.id(2L)
+				.taskName("Some task two")
+				.taskDescription("Need to do task two")
+				.priority(1)
+				.status(TaskCurrentStatus.InProgress)
+				.build();
+
+		Set<Task> taskSet = new HashSet<>(2);
+		taskSet.add(task1);
+		taskSet.add(task2);
+
+		Project projectBody = projectBuilder
+				.id(1L)
+				.projectName("Brand new project")
+				.projectStartDate("2022-02-12")
+				.projectCompletionDate("2022-02-22")
+				.priority(1)
+				.tasks(taskSet)
+				.currentStatus(ProjectCurrentStatus.NotStarted)
+				.build();
+
+		Optional<Project> optionalProject = Optional.of(projectBody);
+		Mockito.when(repository.findById(1L)).thenReturn(optionalProject);
+		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
+
+		assertDoesNotThrow(()->service.deleteTask(1L, 2L));
+	}
+
+	@Test
+	void testDeleteTaskWhenTaskFoundThanDoesNotThrowExc() {
+		Task task = taskBuilder
+				.id(1L)
+				.taskName("Some task one")
+				.taskDescription("Need to do task one")
+				.priority(1)
+				.status(TaskCurrentStatus.ToDo)
+				.build();
+
+		Set<Task> taskSet = new HashSet<>(2);
+		taskSet.add(task);
+
+		Project projectBody = projectBuilder
+				.id(1L)
+				.projectName("Brand new project")
+				.projectStartDate("2022-02-12")
+				.projectCompletionDate("2022-02-22")
+				.priority(1)
+				.tasks(taskSet)
+				.currentStatus(ProjectCurrentStatus.NotStarted)
+				.build();
+
+		Optional<Project> optionalProject = Optional.of(projectBody);
+		Mockito.when(repository.findById(1L)).thenReturn(optionalProject);
+		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
+
+		assertDoesNotThrow(()->service.deleteTask(1L, 1L));
+	}
+
+	@Test
+	void testDeleteTaskWhenTaskNotFoundThanThrowsExc() {
+		Task task = taskBuilder
+				.id(1L)
+				.taskName("Some task one")
+				.taskDescription("Need to do task one")
+				.priority(1)
+				.status(TaskCurrentStatus.ToDo)
+				.build();
+
+		Set<Task> taskSet = new HashSet<>(2);
+		taskSet.add(task);
+
+		Project projectBody = projectBuilder
+				.id(1L)
+				.projectName("Brand new project")
+				.projectStartDate("2022-02-12")
+				.projectCompletionDate("2022-02-22")
+				.priority(1)
+				.tasks(taskSet)
+				.currentStatus(ProjectCurrentStatus.NotStarted)
+				.build();
+
+		Optional<Project> optionalProject = Optional.of(projectBody);
+		Mockito.when(repository.findById(1L)).thenReturn(optionalProject);
+		Mockito.when(repository.save(projectBody)).thenReturn(projectBody);
+
+		assertThrows(ResponseStatusException.class, ()->service.deleteTask(1L, 10L));
 	}
 }
